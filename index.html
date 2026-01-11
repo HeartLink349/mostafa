@@ -1,0 +1,533 @@
+<!DOCTYPE html>  <html lang="ar" dir="rtl">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Mostafa | Profile</title>  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">  
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">  
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">  
+<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>  
+
+<style>  
+    :root {  
+        --primary: #2563eb;  
+        --primary-glow: rgba(37, 99, 235, 0.4);  
+        --bg-dark: #020617;  
+        --card-bg: rgba(15, 23, 42, 0.6);  
+        --ease: cubic-bezier(0.4, 0, 0.2, 1);  
+        --transition-slow: all 0.6s var(--ease);  
+        --whatsapp: #25d366;  
+        --gmail: #ea4335;  
+        --text-color: #ffffff; /* مضاف للوضع الليلي */
+    }  
+
+    /* إضافات الوضع الفاتح - بتشتغل لما تدوس على الزرار */
+    body.light-mode {
+        --bg-dark: #f8fafc;
+        --card-bg: rgba(255, 255, 255, 0.8);
+        --text-color: #1e293b;
+        --primary-glow: rgba(37, 99, 235, 0.2);
+    }
+
+    #loader {  
+        position: fixed; inset: 0; background: var(--bg-dark);  
+        display: flex; justify-content: center; align-items: center;  
+        z-index: 10000; transition: 0.6s var(--ease);  
+    }  
+    #loader .loader-content { text-align: center; }  
+    #loader h1 { font-size: 3rem; font-weight: 900; color: #fff; letter-spacing: 5px; animation: loaderPulse 1.5s infinite; }  
+    @keyframes loaderPulse { 0%, 100% { opacity: 0.5; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1); } }  
+    .loaded #loader { opacity: 0; visibility: hidden; }  
+
+    #magic-cursor {  
+        width: 300px; height: 300px;  
+        background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);  
+        position: fixed; pointer-events: none; z-index: 1;  
+        transform: translate(-50%, -50%); transition: 0.1s; border-radius: 50%;  
+    }  
+
+    .blob {  
+        position: fixed; width: 500px; height: 500px; background: var(--primary);  
+        filter: blur(150px); border-radius: 50%; opacity: 0.15; z-index: -1;  
+        animation: blobMove 15s infinite alternate;  
+    }  
+    @keyframes blobMove {  
+        from { transform: translate(-10%, -10%); }  
+        to { transform: translate(20%, 20%); }  
+    }  
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }  
+
+    body {  
+        margin: 0; font-family: "Tajawal", sans-serif;  
+        background: var(--bg-dark); color: var(--text-color);  
+        overflow-x: hidden; line-height: 1.6; transition: background 0.5s, color 0.5s;
+    }  
+
+    .bg-glow {  
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;  
+        background: radial-gradient(circle at 50% -20%, #1e40af33, transparent 50%);  
+        z-index: -1; pointer-events: none;  
+    }  
+
+    /* أزرار التحكم */
+    .menu-btn, .theme-btn {  
+        position: fixed; top: 20px; z-index: 1000;  
+        background: var(--primary); border: none; color: white;  
+        width: 55px; height: 55px; border-radius: 15px; cursor: pointer;  
+        display: flex; align-items: center; justify-content: center;  
+        font-size: 24px; transition: var(--transition-slow);  
+        box-shadow: 0 0 20px var(--primary-glow);  
+    }  
+    .menu-btn { left: 20px; }
+    .theme-btn { left: 85px; background: var(--card-bg); color: var(--text-color); border: 1px solid rgba(255,255,255,0.1); }
+
+    .menu-btn.active-btn { transform: rotate(360deg); background: #ef4444; }  
+
+    /* زرار الصعود */
+    .scroll-btn {
+        position: fixed; bottom: 30px; left: 30px; 
+        width: 50px; height: 50px; background: var(--primary);
+        color: white; border: none; border-radius: 15px;
+        cursor: pointer; z-index: 997; display: flex;
+        align-items: center; justify-content: center;
+        font-size: 20px; opacity: 0; visibility: hidden;
+        transition: 0.4s; box-shadow: 0 5px 15px var(--primary-glow);
+    }
+    .scroll-btn.visible { opacity: 1; visibility: visible; }
+
+    .sidebar {  
+        position: fixed; top: 0; left: -320px; width: min(290px, 85%); height: 100%;  
+        background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(20px);  
+        z-index: 999; transition: var(--transition-slow);  
+        padding: 100px 20px; border-right: 1px solid rgba(255,255,255,0.1);  
+    }  
+    body.light-mode .sidebar { background: rgba(255, 255, 255, 0.95); }
+    .sidebar.active { left: 0; box-shadow: 20px 0 60px rgba(0,0,0,0.6); }  
+    .sidebar a {  
+        display: block; color: white; text-decoration: none; padding: 18px;  
+        font-size: 19px; margin-bottom: 12px; border-radius: 12px;  
+        background: rgba(255,255,255,0.03); transition: 0.4s; text-align: right;  
+        border: 1px solid transparent;  
+    }  
+    body.light-mode .sidebar a { color: #1e293b; background: rgba(0,0,0,0.05); }
+    .sidebar a:hover { background: var(--primary); transform: translateX(10px); color: white; }  
+
+    .overlay {  
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;  
+        background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);  
+        display: none; z-index: 998; animation: fadeIn 0.4s forwards;  
+    }  
+
+    #hero {  
+        display: flex; flex-direction: column; align-items: flex-start;
+        padding: clamp(100px, 15vh, 200px) 7% 0px; gap: 30px;  
+        position: relative; z-index: 2;  
+    }  
+    .hero-text { text-align: right; width: 100%; }  
+    .hero-text h1 {   
+        font-size: clamp(32px, 5vw, 60px); font-weight: 900; margin: 0;   
+        text-shadow: 0 0 20px rgba(255,255,255,0.1);  
+    }  
+    #typed { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }  
+
+    .hero-image { align-self: flex-start; margin-right: 0; }  
+    .hero-image::after {  
+        content: ''; position: absolute; inset: -10px; background: var(--primary);  
+        filter: blur(40px); opacity: 0.2; border-radius: 50%; z-index: -1;  
+        animation: pulseGlow 4s infinite ease-in-out;  
+    }  
+    @keyframes pulseGlow { 0%, 100% { transform: scale(1); opacity: 0.1; } 50% { transform: scale(1.1); opacity: 0.3; } }  
+
+    .hero-image img {  
+        width: clamp(240px, 30vw, 350px); height: clamp(240px, 30vw, 350px);  
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;  
+        object-fit: cover; border: 4px solid var(--primary);  
+        animation: morph 8s ease-in-out infinite;  
+        box-shadow: 0 0 50px var(--primary-glow);  
+    }  
+
+    @keyframes morph {  
+        0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }  
+        50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }  
+    }  
+
+    .container { max-width: 1200px; margin: auto; padding: 30px 20px 60px; position: relative; z-index: 2;}  
+    .section-title {   
+        text-align: right; font-size: clamp(24px, 4vw, 36px);   
+        border-right: 5px solid var(--primary); padding-right: 15px; margin-bottom: 40px;  
+        text-shadow: 0 0 15px var(--primary-glow);  
+    }  
+
+    .grid-layout {   
+        display: grid;   
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));   
+        gap: 25px;   
+    }  
+
+    .card {  
+        background: var(--card-bg); border: 1px solid rgba(255,255,255,0.08);  
+        border-radius: 24px; padding: 40px 20px; text-align: center;  
+        transition: var(--transition-slow); backdrop-filter: blur(10px);  
+        position: relative; overflow: hidden;  
+    }  
+    .card:hover {   
+        transform: translateY(-12px);   
+        border-color: var(--primary);   
+        box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 25px var(--primary-glow);  
+    }  
+
+    .card:active { transform: scale(0.98); transition: 0.1s; }  
+      
+    .card::after {  
+        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;  
+        background: radial-gradient(circle at center, var(--primary-glow), transparent 70%);  
+        opacity: 0; transition: 0.5s; z-index: -1;  
+    }  
+    .card:hover::after { opacity: 0.3; }  
+
+    .icon-box { font-size: 50px; margin-bottom: 20px; display: block; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));}  
+
+    .btn-main {  
+        background: var(--primary); color: white; border: none; padding: 12px 30px;  
+        border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s;  
+        text-decoration: none; display: inline-block;  
+        box-shadow: 0 5px 15px var(--primary-glow);  
+    }  
+    .btn-main:hover { transform: scale(1.05); filter: brightness(1.2); box-shadow: 0 0 20px var(--primary); }  
+
+    .gift-container {  
+        text-align: center; padding: 20px 0; font-size: 80px;  
+        filter: drop-shadow(0 0 20px var(--primary));  
+        animation: giftPulse 2s ease-in-out infinite; line-height: 1;   
+    }  
+    @keyframes giftPulse { 0% { transform: scale(1); } 50% { transform: scale(1.1) rotate(5deg); } 100% { transform: scale(1); } }  
+
+    .contact-grid { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px; }  
+    .btn-contact {  
+        padding: 12px 25px; border-radius: 12px; text-decoration: none; color: white;  
+        font-weight: bold; display: flex; align-items: center; gap: 10px; transition: 0.3s;  
+    }  
+    .btn-whatsapp { background: var(--whatsapp); box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3); }  
+    .btn-gmail { background: var(--gmail); box-shadow: 0 5px 15px rgba(234, 67, 53, 0.3); }  
+    .btn-contact:hover { transform: translateY(-3px); filter: brightness(1.1); box-shadow: 0 0 15px currentColor; }  
+
+    #main-view, #detail-view { transition: opacity 0.5s var(--ease), transform 0.5s var(--ease); }  
+    .full-detail-section { display: none; opacity: 0; transform: translateY(20px); }  
+    .full-detail-section.active { display: block; opacity: 1; transform: translateY(0); transition: 0.6s var(--ease); }  
+    .detail-img { width: 100%; max-height: 450px; object-fit: cover; border-radius: 20px; margin-bottom: 30px; border: 1px solid var(--primary-glow);}  
+    .summary { background: rgba(37, 99, 235, 0.1); border-right: 4px solid var(--primary); padding: 25px; border-radius: 12px; margin: 20px 0; text-align: right; box-shadow: inset 0 0 15px var(--primary-glow); }  
+    ul { text-align: right; list-style: none; padding-right: 0; }  
+    ul li { margin-bottom: 10px; }  
+    ul li::before { content: "• "; color: var(--primary); font-weight: bold; }  
+    .note-box { background: rgba(255, 193, 7, 0.1); border-right: 4px solid #ffc107; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 15px; text-align: right;}  
+    
+    footer { 
+        padding: 40px 20px; 
+        background: rgba(0,0,0,0.4); 
+        border-top: 1px solid rgba(255,255,255,0.05); 
+        margin-top: 50px; 
+    }  
+    .footer-container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; flex-wrap: wrap; gap: 20px; }
+    .footer-left { text-align: left; direction: ltr; }
+    .footer-left a { color: #94a3b8; text-decoration: none; display: block; font-size: 14px; margin-bottom: 5px; transition: 0.3s; }
+    .footer-left a:hover { color: var(--primary); }
+    .footer-left i { margin-right: 8px; color: var(--primary); width: 16px; text-align: center; }
+
+    @media (max-width: 768px) {  
+        #hero { padding-top: 100px; align-items: center; text-align: center; padding-bottom: 10px; }  
+        .hero-text { text-align: center; }
+        .hero-image { align-self: center; }
+        .section-title { text-align: center; border-right: none; border-bottom: 3px solid var(--primary); display: inline-block; width: 100%; margin-bottom: 30px; }  
+        #magic-cursor { display: none; }  
+        .footer-container { flex-direction: column-reverse; text-align: center; }
+        .footer-left { text-align: center; }
+    }  
+</style>
+
+</head>  
+<body>  <div id="loader">  
+    <div class="loader-content">  
+        <h1>MOSTAFA</h1>  
+    </div>  
+</div>  
+
+<div id="magic-cursor"></div>  
+<div class="blob"></div>  
+<div class="bg-glow"></div>  
+  
+<button class="menu-btn" id="menuBtn" onclick="toggleSidebar()">  
+    <span id="menuIcon">☰</span>  
+</button>  
+
+<button class="theme-btn" onclick="toggleTheme()"><span id="themeIcon">🌙</span></button>
+<button class="scroll-btn" id="scrollBtn" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+  
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>  
+
+<nav class="sidebar" id="sidebar">  
+    <a href="#" onclick="closeDetails(); toggleSidebar();">🏠 الرئيسية</a>  
+    <a href="#services" onclick="scrollToSection('services')">🛠️ الخدمات</a>  
+    <a href="#contact" onclick="scrollToSection('contact')">📞 تواصل معي</a>  
+</nav>  
+
+<div id="main-view">  
+    <section id="hero">  
+        <div class="hero-image" data-aos="zoom-in">  
+            <img src="https://files.catbox.moe/yxvodh.jpg" alt="Profile">  
+        </div>  
+        <div class="hero-text" data-aos="fade-up">  
+            <h1>مرحبًا، أنا Mostafa</h1>  
+            <div style="font-size: clamp(20px, 3vw, 28px); margin-top: 15px;">أعمل <span id="typed"></span></div>  
+            <p style="color: #94a3b8; margin-top: 20px; font-size: 18px;">محترف متعدد المهارات يقدم خبرة في كذا مجال مختلف ✨</p>  
+            </div>  
+    </section>  
+
+    <section id="services" class="container">  
+        <h2 class="section-title">خدماتي الرئيسية:</h2>  
+        <div class="grid-layout">  
+            <div class="card" data-aos="fade-up">  
+                <span class="icon-box">🎬</span>  
+                <h2>تحرير الفيديو</h2>  
+                <p>تحويل فيديو عادي لفيديو احترافي وجذاب.</p>  
+                <button class="btn-main" onclick="openDetail('video-page')">عرض التفاصيل</button>  
+            </div>  
+            <div class="card" data-aos="fade-up" data-aos-delay="100">  
+                <span class="icon-box">💻</span>  
+                <h2>تطوير الويب</h2>  
+                <p>أبني مواقع وتطبيقات ويب متجاوبة حسب احتياجاتك</p>  
+                <button class="btn-main" onclick="openDetail('web-page')">عرض التفاصيل</button>  
+            </div>  
+            <div class="card" data-aos="fade-up" data-aos-delay="200">  
+                <span class="icon-box">📱</span>  
+                <h2>تطوير تطبيقات الموبايل</h2>  
+                <p>إنشاء تطبيقات موبايل مخصصة تعمل على أندرويد و iOS.</p>  
+                <button class="btn-main" onclick="openDetail('mobile-page')">عرض التفاصيل</button>  
+            </div>  
+            <div class="card" data-aos="fade-up" data-aos-delay="300">  
+                <span class="icon-box">🚀</span>  
+                <h2>نمو الحسابات - رشق سريع</h2>  
+                <p>تعزيز حساباتك على جميع منصات السوشيال ميديا بسرعة وكفاءة</p>  
+                <button class="btn-main" onclick="openDetail('growth-page')">عرض التفاصيل</button>  
+            </div>  
+            <div class="card" data-aos="fade-up" data-aos-delay="400">  
+                <span class="icon-box">🎁</span>  
+                <h2>الهدايا والذكريات - HeartLink</h2>  
+                <p>نحول مناسباتكم إلى ذكرى إلكترونية تدوم للأبد</p>  
+                <button class="btn-main" onclick="openDetail('heartlink-page')">عرض التفاصيل</button>  
+            </div>  
+        </div>  
+    </section>  
+
+    <section id="contact" class="container">  
+        <h2 class="section-title">تواصل معي الآن:</h2>  
+        <div class="card" style="max-width: 600px; margin: auto;" data-aos="zoom-in">  
+            <p style="font-size: 20px;">جاهز نبدأ مشروعك الجديد؟ كلمني فوراً 👇</p>  
+            <div class="contact-grid">  
+                <a href="https://wa.me/201125674359" target="_blank" class="btn-contact btn-whatsapp"><i class="fab fa-whatsapp"></i> تواصل عبر واتساب</a>  
+                <a href="mailto:mostafaabdulati0@gmail.com" class="btn-contact btn-gmail"><i class="far fa-envelope"></i> راسلني عبر الجيميل</a>  
+            </div>  
+            <p style="margin-top: 20px; color: #94a3b8; font-size: 14px;">مستني إيه؟ كلمنا دلوقتي 😂</p>  
+        </div>  
+    </section>  
+</div>  
+
+<div id="detail-view" class="container" style="display:none; opacity: 0;">  
+    <div id="video-page" class="full-detail-section">  
+        <img src="https://files.catbox.moe/k4onnf.jpg" class="detail-img">  
+        <h2>🎬 تحرير الفيديو</h2>  
+        <p><strong>يعني إيه؟ 🤔</strong><br>تحويل فيديو عادي لفيديو احترافي وجذاب.</p>  
+        <p><strong>بتعمل إيه؟ 🛠️</strong></p>  
+        <ul>  
+            <li>حذف الأجزاء غير الضرورية</li>  
+            <li>ترتيب وتحسين تسلسل المشاهد</li>  
+            <li>إضافة نصوص توضيحية على الفيديو</li>  
+            <li>إضافة موسيقى وانتقالات احترافية</li>  
+        </ul>  
+        <div class="summary"><strong>نبذة مختصرة عن الخدمة: 📝</strong><br>خدمة تحرير الفيديو بتحوّل المحتوى العادي لفيديو احترافي يجذب الانتباه ويوصل الفكرة بشكل واضح ومؤثر.</div>  
+        <button class="btn-main" style="background:#334155" onclick="closeDetails()">🔙 رجوع للرئيسية</button>  
+    </div>  
+
+    <div id="web-page" class="full-detail-section">  
+        <img src="https://files.catbox.moe/qfh4db.jpg" class="detail-img">  
+        <h2>💻 تطوير الويب</h2>  
+        <p><strong>يعني إيه؟ 🤔</strong><br>إنشاء مواقع إنترنت احترافية.</p>  
+        <p><strong>بتعمل إيه؟ 🛠️</strong></p>  
+        <ul>  
+            <li>صفحة تعريف وصفحة خدمات</li>  
+            <li>صفحة تواصل</li>  
+            <li>متجر إلكتروني أو نظام حجز</li>  
+            <li>مواقع شخصية وأنظمة إدارة</li>  
+        </ul>  
+        <div class="summary"><strong>نبذة مختصرة عن الخدمة: 📝</strong><br>خدمة تطوير الويب بتوفّر مواقع إلكترونية احترافية تساعدك تعرّف بشغلك، تقوّي وجودك أونلاين، وتسهّل وصول العملاء ليك.</div>  
+        <button class="btn-main" style="background:#334155" onclick="closeDetails()">🔙 رجوع للرئيسية</button>  
+    </div>  
+
+    <div id="mobile-page" class="full-detail-section">  
+        <img src="https://files.catbox.moe/7h8so1.jpg" class="detail-img">  
+        <h2>📱 تطوير تطبيقات الموبايل</h2>  
+        <p><strong>يعني إيه؟ 🤔</strong><br>إنشاء تطبيقات موبايل مخصصة تعمل على أندرويد و iOS.</p>  
+        <p><strong>بتعمل إيه؟ 🛠️</strong></p>  
+        <ul>  
+            <li>تصميم واجهات سهلة الاستخدام</li>  
+            <li>شاشات تسجيل ودخول</li>  
+            <li>عرض البيانات بشكل منظم</li>  
+            <li>حفظ وإدارة المعلومات</li>  
+        </ul>  
+        <div class="summary"><strong>نبذة مختصرة عن الخدمة: 📝</strong><br>خدمة تطوير تطبيقات الموبايل بتقدّم تطبيقات عملية وسهلة الاستخدام تساعدك تدير شغلك أو خدمتك بكفاءة من خلال الموبايل.</div>  
+        <button class="btn-main" style="background:#334155" onclick="closeDetails()">🔙 رجوع للرئيسية</button>  
+    </div>  
+
+    <div id="growth-page" class="full-detail-section">  
+        <img src="https://files.catbox.moe/4matza.jpg" class="detail-img">  
+        <h2>📈 تزويد ورشق – تفاصيل الخدمة</h2>  
+        <p><strong>يعني إيه؟ 🤔</strong></p>  
+        <div class="note-box">💡 ملحوظه: انت بتختار عدد المشاهدات او تعليقات او المشاهدات او لايكات.</div>  
+        <p>خدمة تزويد ورشق تهدف لتعزيز حساباتك على جميع منصات السوشيال ميديا من خلال زيادة المتابعين، المشاهدات، اللايكات، والتعليقات بطريقة آمنة وفعّالة.</p>  
+        <p><strong>بتعمل إيه؟ 🛠️</strong></p>  
+        <ul>  
+            <li>زيادة عدد المتابعين الحقيقيين أو الافتراضيين على حساباتك</li>  
+            <li>زيادة اللايكات والمشاهدات على المنشورات والفيديوهات</li>  
+            <li>توليد تعليقات عل المنشور الخاص بك او الفيديو + تعليقات مخصصة (انت بتكتبها) من حسابات أجنبية أو مصرية حقيقية</li>  
+        </ul>  
+        <div class="summary"><strong>نبذة مختصرة عن الخدمة: 📝</strong><br>خدمة تزويد ورشق تساعدك على نمو حساباتك على جميع منصات السوشيال ميديا بسرعة وكفاءة، وزيادة التفاعل والمصداقية.</div>  
+        <button class="btn-main" style="background:#334155" onclick="closeDetails()">🔙 رجوع للرئيسية</button>  
+    </div>  
+
+    <div id="heartlink-page" class="full-detail-section">  
+        <div class="gift-container">🎁</div>  
+        <h2 style="margin-top: 0;">🎁 قسم الهدايا والذكريات – HeartLink</h2>  
+        <p><strong>✨ حكايتكم تستاهل ذكرى تعيش للأبد</strong></p>  
+        <p><strong>يعني إيه؟ 🤔</strong><br>خدمة تهدف إلى تحويل كل مناسبة لهدية مميزة وذكرى لا تُنسى. الهدايا مش مجرد شيء مادي، إحنا بنصمم لك مشاعر تدوم لكل لحظة.</p>  
+        <p><strong>بتعمل إيه؟ 🛠️</strong></p>  
+        <ul>  
+            <li>تصميم هدايا شخصية ومميزة لكل المناسبات 🎂🤝🎉💑❤️</li>  
+            <li>الابتكار في التعبير عن مشاعرك في كل هدية</li>  
+            <li>تجربة فريدة قبل الاستلام لضمان الرضا التام</li>  
+        </ul>  
+        <p><strong>بيُستخدم في إيه؟</strong></p>  
+        <ul>
+            <li>أعياد الميلاد، السنة الجديدة، الصلح أو الاحتفال بالحب</li>
+            <li>مفاجآت للأصدقاء أو العائلة</li>
+            <li>خلق لحظات لا تُنسى مع الأشخاص المقربين</li>
+        </ul>
+        <div class="note-box">💡 ملحوظة: نقدر نعمل لك الخدمة على شكل لينك إلكتروني أو تطبيق موبايل جاهز للتشغيل.</div>  
+        <div class="summary"><strong>نبذة مختصرة 📝</strong><br>خدمة تصميم الهدايا والذكريات تساعدك على خلق لحظات فريدة ومميزة، وتحويل كل مناسبة لذكرى تعيش للأبد، مع الاهتمام بكل التفاصيل التي تعكس مشاعرك.</div>  
+        <button class="btn-main" style="background:#334155" onclick="closeDetails()">🔙 رجوع للرئيسية</button>  
+    </div>  
+</div>  
+
+<footer>  
+    <div class="footer-container">
+        <div class="footer-left">
+            <a href="tel:01125674359"><i class="fas fa-phone"></i> 01125674359</a>
+            <a href="mailto:mostafaabdulati0@gmail.com"><i class="fas fa-envelope"></i> mostafaabdulati0@gmail.com</a>
+        </div>
+        <div class="footer-right">
+            <p>© 2024 جميع الحقوق محفوظة | مصمم الموقع - <b>Mostafa</b></p>
+        </div>
+    </div>
+</footer>  
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>  
+<script>  
+    window.addEventListener('load', () => {  
+        document.body.classList.add('loaded');  
+        AOS.init({ duration: 800, once: true });  
+    });  
+
+    new Typed('#typed', {  
+        strings: ['مطور تطبيقات موبايل', 'محرر فيديو', 'مطور ويب متكامل', 'خبير نمو حسابات', 'مصمم ذكريات HeartLink'],  
+        typeSpeed: 50, backSpeed: 30, loop: true  
+    });  
+
+    const cursor = document.getElementById('magic-cursor');  
+    document.addEventListener('mousemove', (e) => {  
+        cursor.style.left = e.clientX + 'px';  
+        cursor.style.top = e.clientY + 'px';  
+    });  
+
+    function toggleSidebar() {  
+        const sidebar = document.getElementById('sidebar');  
+        const overlay = document.getElementById('overlay');  
+        const btn = document.getElementById('menuBtn');  
+        const icon = document.getElementById('menuIcon');  
+
+        sidebar.classList.toggle('active');  
+        btn.classList.toggle('active-btn');  
+          
+        if(sidebar.classList.contains('active')) {  
+            overlay.style.display = 'block';  
+            icon.innerHTML = '✕';  
+        } else {  
+            overlay.style.display = 'none';  
+            icon.innerHTML = '☰';  
+        }  
+    }  
+
+    // وظيفة الوضع الليلي الجديدة
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const icon = document.getElementById('themeIcon');
+        icon.innerHTML = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+    }
+
+    // وظيفة زرار الصعود
+    window.addEventListener('scroll', () => {
+        const btn = document.getElementById('scrollBtn');
+        if (window.scrollY > 400) btn.classList.add('visible');
+        else btn.classList.remove('visible');
+    });
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function scrollToSection(id) {  
+        closeDetails();  
+        if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar();  
+        setTimeout(() => {  
+            const section = document.getElementById(id);  
+            if(section) section.scrollIntoView({ behavior: 'smooth' });  
+        }, 400);  
+    }  
+
+    function openDetail(id) {  
+        const main = document.getElementById('main-view');  
+        const detail = document.getElementById('detail-view');  
+        main.style.opacity = '0';  
+        main.style.transform = 'translateY(-20px)';  
+        setTimeout(() => {  
+            main.style.display = 'none';  
+            detail.style.display = 'block';  
+            document.querySelectorAll('.full-detail-section').forEach(s => {  
+                s.style.display = 'none';  
+                s.classList.remove('active');  
+            });  
+            const target = document.getElementById(id);  
+            target.style.display = 'block';  
+            setTimeout(() => {  
+                detail.style.opacity = '1';  
+                target.classList.add('active');  
+            }, 50);  
+            window.scrollTo({top: 0, behavior: 'smooth'});  
+        }, 500);  
+    }  
+
+    function closeDetails() {  
+        const main = document.getElementById('main-view');  
+        const detail = document.getElementById('detail-view');  
+        detail.style.opacity = '0';  
+        setTimeout(() => {  
+            detail.style.display = 'none';  
+            main.style.display = 'block';  
+            setTimeout(() => {  
+                main.style.opacity = '1';  
+                main.style.transform = 'translateY(0)';  
+                AOS.refresh();  
+            }, 50);  
+        }, 500);  
+    }  
+</script>
+
+</body>  
+</html>
